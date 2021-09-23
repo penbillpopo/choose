@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <title>幫你選</title>
+</head>
+<body>
+    <div id="app">
+        <home-component></home-component>
+    </div>
+</body>
+
+<script type="text/x-template" id="homeComponent">
+    <div>
+        <div class="chooseBox" v-if="status==='init'">
+            <p class="title">請輸入讓妳猶豫的項目</p>
+            <div class="inputBox">
+                <input class="textInput" v-model="textInput" type="text">
+                <p class="remind">請用逗號將項目分開 (EX:法式千層蛋糕,提拉米蘇蛋糕,巧克力布朗尼蛋糕)</p>
+            </div>
+            <button class="submitBtn" @click="onSubmitClick">
+                <p class="text">送出妳的困擾</p>
+            </button>
+        </div>
+        <div class="loadingBox" v-if="status==='loading'">
+            <img class="loading" src="./img/loading.gif" alt="">
+            <p class="text">努力幫妳分析中...</p>
+        </div>
+        <div class="resultBox" v-if="status==='result'">
+            <img class="good" src="./img/good.png" alt="">
+            <p class="text">強烈建議"{{result}}"比較好!</p>
+        </div>
+    </div>
+</script>
+
+<script>
+    const homeComponent = {
+        template: "#homeComponent",
+        data(){
+            return {
+                status:'init',
+                textInput:'',
+                result:''
+            }
+        },
+        created(){
+        },
+        methods: {
+            onSubmitClick(){
+                if(this.textInput===''){
+                    alert('輸入空的!妳耍我!')
+                }else{
+                    const chooseArr = this.textInput.split(',')
+                    const randomNum = this.getRandomInt(chooseArr.length)
+                    this.result = chooseArr[randomNum]
+                    this.status = 'loading'
+                    this.loadingTimer = setTimeout(() => {
+                        this.status = 'result'
+                    }, 1000);
+                }
+            },
+            getRandomInt(max) {
+                return Math.floor(Math.random() * max);
+            }
+        },
+    };
+    const app = new Vue({
+        el: "#app",
+        data: {
+        },
+        components: {
+            'home-component': homeComponent,
+        },
+        created(){
+        },
+    });
+</script>
+</html>
